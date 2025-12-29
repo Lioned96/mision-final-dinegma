@@ -2,64 +2,92 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Misión Final · Dinegma 2025 → 2026</title>
+<title>Misión Final · DINEGMA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #0b0f1a, #000);
-  color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: radial-gradient(circle at top, #0b0f1a, #000);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+#particles, #confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(0,247,255,0.6);
+  border-radius: 50%;
+  animation: float 18s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-100vh); }
+}
+
+.confetti {
+  position: absolute;
+  width: 6px;
+  height: 10px;
+  background: gold;
+  animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
 #app {
+  position: relative;
+  z-index: 1;
   max-width: 900px;
-  width: 100%;
-  padding: 30px;
+  margin: auto;
+  padding: 40px 20px;
   text-align: center;
 }
 
 h1 {
   font-size: 42px;
   letter-spacing: 3px;
-  margin-bottom: 10px;
 }
 
 h2 {
   font-size: 28px;
-  margin-bottom: 15px;
+  margin-top: 20px;
 }
 
 p {
   font-size: 20px;
-  line-height: 1.5;
-  opacity: 0.95;
+  line-height: 1.6;
 }
 
 .subtitle {
-  font-size: 18px;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
   gap: 15px;
   margin-top: 30px;
 }
 
 button {
-  padding: 15px 20px;
-  font-size: 15px;
+  padding: 18px;
+  font-size: 14px;
   letter-spacing: 1.5px;
   background: transparent;
   border: 2px solid #00f7ff;
@@ -71,15 +99,26 @@ button {
 button:hover {
   background: #00f7ff;
   color: #000;
+  transform: scale(1.05);
 }
 
-button.final {
-  border-color: #ffd700;
-  color: #ffd700;
+button.locked {
+  opacity: 0.3;
+  pointer-events: none;
 }
 
-button.final:hover {
-  background: #ffd700;
+button.selected {
+  background: #00f7ff;
+  color: #000;
+}
+
+button.gold {
+  border-color: gold;
+  color: gold;
+}
+
+button.gold:hover {
+  background: gold;
   color: #000;
 }
 
@@ -88,129 +127,126 @@ button.final:hover {
   animation: fadeIn 0.6s ease;
 }
 
+#alert {
+  margin-top: 20px;
+  color: gold;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width:600px){
+  h1 { font-size: 34px; }
+  h2 { font-size: 24px; }
+  p { font-size: 18px; }
 }
 </style>
 </head>
 
 <body>
 
+<div id="particles"></div>
+<div id="confetti"></div>
+
 <audio id="audio" loop>
   <source src="audio.mp3" type="audio/mpeg">
 </audio>
 
 <div id="app">
+  <h1>DINEGMA</h1>
+  <p class="subtitle">MISIÓN FINAL · 2025 → 2026</p>
 
-  <h1>MISIÓN FINAL</h1>
-  <p class="subtitle">Cierre dos mil veinticinco · Inicio dos mil veintiséis</p>
-
-  <button onclick="startExperience()">INICIAR EXPERIENCIA</button>
+  <button onclick="start()">INICIAR EXPERIENCIA</button>
 
   <div id="menu" style="display:none;">
-    <h2>Selecciona un área</h2>
-
     <div class="buttons">
-      <button onclick="showArea('comercial')">Comercial</button>
-      <button onclick="showArea('mercadeo')">Mercadeo & Visual</button>
-      <button onclick="showArea('operaciones')">Operaciones</button>
-      <button onclick="showArea('desarrollo')">Desarrollo & Finanzas</button>
-      <button onclick="showArea('personas')">Personas</button>
-      <button onclick="showArea('gerencia')">Gerencia</button>
-      <button class="final" onclick="showArea('tiendas')">Equipo de Tiendas</button>
+      <button id="b-comercial" onclick="selectArea('comercial')">Comercial</button>
+      <button id="b-mercadeo" class="locked">Mercadeo & Visual</button>
+      <button id="b-operaciones" class="locked">Operaciones</button>
+      <button id="b-desarrollo" class="locked">Desarrollo & Finanzas</button>
+      <button id="b-personas" class="locked">Personas</button>
+      <button id="b-gerencia" class="locked">Gerencia</button>
+      <button id="b-tiendas" class="locked gold">Equipo de Tiendas</button>
     </div>
+
+    <button class="gold locked" id="unlock" onclick="unlock2026()">DESBLOQUEAR 2026</button>
+    <div id="alert"></div>
   </div>
 
   <div id="message"></div>
-
 </div>
 
 <script>
 const audio = document.getElementById("audio");
-const menu = document.getElementById("menu");
-const message = document.getElementById("message");
+const order = ["comercial","mercadeo","operaciones","desarrollo","personas","gerencia","tiendas"];
+let step = 0;
 
-function startExperience() {
-  audio.play();
-  menu.style.display = "block";
-}
-
-const messages = {
-  comercial: `
-    <h2>Equipo Comercial</h2>
-    <p>
-    Gracias por estar todos los días al frente de los resultados.
-    Por salir a buscar oportunidades, sostener la presión
-    y no dejar de empujar incluso en los momentos más retadores.
-    Cada esfuerzo fue clave para avanzar como empresa.
-    </p>
-  `,
-
-  mercadeo: `
-    <h2>Mercadeo & Visual Merchandising</h2>
-    <p>
-    Gracias por darle voz, imagen y experiencia a nuestras marcas.
-    Por conectar ideas con personas,
-    transformar espacios en emociones
-    y mantener viva la identidad en cada punto de venta.
-    </p>
-  `,
-
-  operaciones: `
-    <h2>Operaciones, Producto, Bodega e Inventarios</h2>
-    <p>
-    Gracias por el orden, la precisión y el trabajo constante.
-    Por cuidar cada proceso y cada detalle
-    que permite que todo funcione correctamente.
-    Su respaldo sostiene toda la operación.
-    </p>
-  `,
-
-  desarrollo: `
-    <h2>Desarrollo & Finanzas</h2>
-    <p>
-    Gracias por la evolución, el control y la visión estratégica.
-    Por construir herramientas, cuidar los recursos
-    y permitir que la empresa crezca con equilibrio y proyección.
-    </p>
-  `,
-
-  personas: `
-    <h2>Personas & Asistencia al Personal</h2>
-    <p>
-    Gracias por cuidar la cultura, acompañar procesos
-    y crear espacios donde el trabajo se vive mejor cada día.
-    Su aporte es la base del bienestar del equipo.
-    </p>
-  `,
-
-  gerencia: `
-    <h2>Gerencia</h2>
-    <p>
-    Gracias por marcar el rumbo, asumir decisiones clave
-    y liderar con visión en cada etapa del año.
-    Su guía permitió avanzar con claridad y enfoque.
-    </p>
-  `,
-
-  tiendas: `
-    <h2>Equipo de Tiendas</h2>
-    <p>
-    Ustedes son el corazón de todo esto.
-    Asesoras y asesores que están al frente cada día,
-    representando la marca con compromiso y actitud.
-    Administradores alternos que sostienen la operación
-    y lideran cuando más se necesita.
-    Administradores que guían, forman y mantienen al equipo unido.
-    Gracias por hacerlo posible, día tras día.
-    </p>
-    <h2>¡Dinegma, juntos triunfamos!</h2>
-  `
+const texts = {
+  comercial: "Gracias por empujar resultados y sostener la presión cada día.",
+  mercadeo: "Gracias por darle voz, imagen y experiencia a nuestras marcas.",
+  operaciones: "Gracias por el orden, la precisión y el respaldo que sostiene todo.",
+  desarrollo: "Gracias por la visión, el control y la evolución constante.",
+  personas: "Gracias por cuidar la cultura, los procesos y a las personas.",
+  gerencia: "Gracias por liderar, decidir y marcar el rumbo.",
+  tiendas: "Ustedes son el corazón de todo. Gracias por estar al frente cada día."
 };
 
-function showArea(area) {
-  message.innerHTML = messages[area];
+function start(){
+  audio.play();
+  document.getElementById("menu").style.display = "block";
+}
+
+function selectArea(area){
+  if(order[step] !== area) return;
+
+  document.getElementById("message").innerHTML =
+    `<h2>${area.toUpperCase()}</h2><p>${texts[area]}</p>`;
+
+  document.getElementById("b-"+area).classList.add("selected");
+  step++;
+
+  if(step < order.length){
+    document.getElementById("b-"+order[step]).classList.remove("locked");
+  } else {
+    document.getElementById("unlock").classList.remove("locked");
+  }
+}
+
+function unlock2026(){
+  launchConfetti();
+  document.getElementById("message").innerHTML = `
+    <h1>BIENVENIDO DOS MIL VEINTISÉIS</h1>
+    <p>
+      Cerramos dos mil veinticinco con gratitud.<br>
+      Iniciamos dos mil veintiséis con enfoque, energía y equipo.<br><br>
+      <strong>DINEGMA, VAMOS CON TODO.</strong>
+    </p>
+  `;
+}
+
+function launchConfetti(){
+  const confetti = document.getElementById("confetti");
+  for(let i=0;i<120;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random()*100+"%";
+    c.style.background = ["gold","#00f7ff","#fff"][Math.floor(Math.random()*3)];
+    c.style.animationDuration = 2+Math.random()*2+"s";
+    confetti.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+// partículas fondo
+const particles = document.getElementById("particles");
+for(let i=0;i<90;i++){
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = Math.random()*100+"%";
+  p.style.animationDuration = 15+Math.random()*15+"s";
+  particles.appendChild(p);
 }
 </script>
 
