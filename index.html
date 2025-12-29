@@ -32,10 +32,11 @@ body{
   max-width:900px;margin:auto;
   padding:40px 20px;text-align:center
 }
+
 h1{font-size:42px;letter-spacing:3px;margin-bottom:5px}
 .subtitle{opacity:.8;margin-bottom:30px}
 .area-title{font-size:34px;margin-bottom:20px}
-p{font-size:20px;line-height:1.65}
+p{font-size:20px;line-height:1.7;white-space:pre-line}
 
 /* ===== BOTONES ===== */
 button{
@@ -49,20 +50,10 @@ button{
   cursor:pointer;
   transition:.3s
 }
-button:hover{
-  background:#53c2d7;
-  color:#000;
-  transform:scale(1.05)
-}
-button.gold{
-  border-color:gold;
-  color:gold
-}
-button.gold:hover{
-  background:gold;
-  color:#000
-}
-button.visited{opacity:.5}
+button:hover{background:#53c2d7;color:#000;transform:scale(1.05)}
+button.gold{border-color:gold;color:gold}
+button.gold:hover{background:gold;color:#000}
+button.visited{opacity:.45}
 
 .menu-buttons{
   display:grid;
@@ -185,14 +176,119 @@ function playAudio(){
   audio.play();
 }
 
-/* ===== AREAS (abreviadas para foco final) ===== */
+/* ===== MENSAJES EXTENSOS DEFINITIVOS ===== */
+const messages={
+comercial:{
+title:"Equipo Comercial",
+text:`Gracias por estar al frente de los resultados todos los días.
+Por salir a buscar oportunidades, sostener la presión y no dejar de empujar, incluso cuando el camino se ponía cuesta arriba.
+
+Gracias por la constancia, la disciplina y la actitud con la que enfrentan cada meta.
+Y gracias también por el trabajo de formación y acompañamiento,
+por desarrollar habilidades, elevar el nivel del equipo
+y asegurar que cada objetivo tenga personas preparadas detrás.
+
+El crecimiento comercial no sucede por casualidad.
+Sucede porque hay enfoque, preparación y compromiso.`
+},
+mercadeo:{
+title:"Mercadeo & Visual Merchandising",
+text:`Gracias por darle voz, imagen y emoción a nuestras marcas.
+Por transformar ideas en mensajes claros, conectar con las personas
+y cuidar cada detalle que construye percepción.
+
+Gracias por convertir espacios en experiencias,
+por hacer que la marca se viva, se sienta y se recuerde.
+Su trabajo no solo comunica, genera conexión.`
+},
+operaciones:{
+title:"Operaciones, Producto, Bodega e Inventarios",
+text:`Gracias por el orden, la precisión y el trabajo constante que muchas veces no se ve, pero siempre se siente.
+Por cuidar procesos, producto y movimiento,
+y por ser el respaldo silencioso que sostiene la operación diaria.
+
+Gracias por anticiparse, resolver y mantener el equilibrio
+que permite que todo siga avanzando sin detenerse.`
+},
+desarrollo:{
+title:"Desarrollo",
+text:`Gracias por impulsar la evolución, los sistemas y las mejoras que nos permiten crecer.
+Por buscar soluciones, optimizar procesos
+y empujar a la empresa hacia el futuro.
+
+Gracias por convertir ideas en herramientas
+y acompañar el crecimiento con innovación, lógica y visión.`
+},
+finanzas:{
+title:"Finanzas",
+text:`Gracias por el control, la responsabilidad y la visión estratégica.
+Por cuidar los recursos, mantener el equilibrio
+y asegurar la estabilidad que permite crecer con solidez.
+
+Gracias por sostener la empresa desde los números,
+pero también desde la planificación y la confianza.`
+},
+personas:{
+title:"Personas & Asistencia al Personal",
+text:`Gracias por cuidar la cultura, los procesos y, sobre todo, a las personas.
+Por acompañar, ordenar y apoyar cada etapa del camino.
+
+Gracias por crear espacios donde se puede trabajar mejor,
+con respeto, cuidado y humanidad.`
+},
+gerencia:{
+title:"Gerencia",
+text:`Gracias por marcar el rumbo cuando no siempre es claro.
+Por tomar decisiones difíciles, asumir responsabilidades
+y sostener la visión incluso en los momentos más retadores.
+
+Gracias por liderar con criterio, equilibrio y compromiso,
+por pensar en el hoy sin perder de vista el mañana,
+y por mantener al equipo alineado, enfocado y unido.
+
+La dirección no solo se trata de decidir,
+se trata de guiar personas.`
+},
+tiendas:{
+title:"Equipo de Tiendas",
+text:`Ustedes son el corazón de todo esto.
+
+Asesoras y asesores que están al frente cada día,
+con clientes reales, metas reales y retos reales.
+Gracias por atender, vender y representar la marca con actitud, energía y compromiso.
+
+Administradores alternos, gracias por sostener la operación,
+apoyar al equipo, resolver en el momento y liderar cuando más se necesita.
+
+Administradores, gracias por guiar, formar y mantener a sus equipos unidos,
+por dar dirección, acompañamiento y ejemplo constante.
+
+Gracias por hacer que Vélez, Hurley, Nava y Shopialo cobren vida
+en cada tienda, en cada conversación, en cada venta y en cada experiencia.
+
+Nada de esto sería posible sin su esfuerzo diario.
+Ustedes hacen que todo lo demás tenga sentido.`
+}
+};
+
 function openArea(area,btn){
   visited.add(area);
   btn.classList.add("visited");
-  alertBox.innerText="";
+  menu.style.display="none";
+  content.style.display="block";
+  const m=messages[area];
+  content.innerHTML=`
+    <h2 class="area-title ${area}">${m.title}</h2>
+    <p>${m.text}</p>
+    <button onclick="backToMenu()">REGRESAR AL MENÚ</button>
+  `;
+}
+function backToMenu(){
+  content.style.display="none";
+  menu.style.display="block";
 }
 
-/* ===== AHORCADO ===== */
+/* ===== AHORCADO 2026 ===== */
 const phrase="DINEGMA JUNTOS TRIUNFAMOS";
 let guessed=[];
 
@@ -210,22 +306,15 @@ function startHangman(){
 function renderHangman(){
   let display="";
   for(let c of phrase){
-    if(c===" ") display+="&nbsp;&nbsp;";
+    if(c===" ") display+="  ";
     else if(guessed.includes(c)) display+=c+" ";
     else display+="_ ";
   }
-
   content.innerHTML=`
     <h2 class="area-title tiendas">DESCUBRE EL MENSAJE</h2>
     <div id="word">${display}</div>
-    <div class="keyboard">${generateKeyboard()}</div>
+    <div class="keyboard">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(l=>`<button onclick="guess('${l}',this)">${l}</button>`).join("")}</div>
   `;
-}
-
-function generateKeyboard(){
-  return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(l=>{
-    return `<button onclick="guess('${l}',this)">${l}</button>`;
-  }).join("");
 }
 
 function guess(letter,btn){
@@ -243,13 +332,15 @@ function checkSolved(){
   content.innerHTML=`
     <h1 class="tiendas">¡FELIZ 2026!</h1>
     <p>
-      Gracias por todo lo construido en 2025.<br>
-      Este logro es de todos.<br><br>
+      Gracias por todo lo construido en 2025.
+      Este logro es de todos.
+
       En 2026 seguimos juntos,
-      creciendo y triunfando una vez más.<br><br>
-      <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
+      creciendo y triunfando una vez más.
+
+      DINEGMA, JUNTOS TRIUNFAMOS.
     </p>
-    <button class="gold" style="margin-top:30px" onclick="goHome()">VOLVER AL INICIO</button>
+    <button class="gold" onclick="goHome()">VOLVER AL INICIO</button>
   `;
 }
 
