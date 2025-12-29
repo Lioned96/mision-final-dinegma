@@ -10,14 +10,14 @@
 
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background: radial-gradient(circle at top, #050814, #000);
   color: #fff;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-/* ===== UNIVERSO ===== */
-#universe {
+/* ===== FONDO ESTRELLAS ===== */
+#stars {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -28,63 +28,28 @@ body {
   position: absolute;
   width: 2px;
   height: 2px;
-  background: white;
-  opacity: 0.6;
-  animation: drift 30s linear infinite;
-}
-
-@keyframes drift {
-  from { transform: translateY(100vh); }
-  to { transform: translateY(-120vh); }
-}
-
-.shooting-star {
-  position: absolute;
-  width: 120px;
-  height: 1px;
-  background: linear-gradient(90deg, white, transparent);
-  animation: shoot 2s ease-out forwards;
-}
-
-@keyframes shoot {
-  from { opacity: 1; transform: translate(-50vw, -50vh); }
-  to { opacity: 0; transform: translate(50vw, 50vh); }
-}
-
-.planet {
-  position: absolute;
-  width: 200px;
-  height: 200px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
-  animation: orbit 120s linear infinite;
+  animation: float 25s linear infinite;
 }
 
-@keyframes orbit {
-  from { transform: translateX(-20vw); }
-  to { transform: translateX(120vw); }
+@keyframes float {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-120vh); }
 }
 
 /* ===== APP ===== */
 #app {
   position: relative;
   z-index: 2;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
   text-align: center;
-  padding: 20px;
-}
-
-.card {
-  max-width: 720px;
-  width: 100%;
 }
 
 h1 {
-  letter-spacing: 4px;
-  margin-bottom: 10px;
+  font-size: 42px;
+  letter-spacing: 3px;
 }
 
 .area-title {
@@ -97,26 +62,58 @@ p {
   line-height: 1.6;
 }
 
-button {
+/* ===== BOTONES ===== */
+.menu-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 15px;
   margin-top: 30px;
-  padding: 16px 32px;
+}
+
+button {
+  padding: 16px 30px;
   font-size: 14px;
-  letter-spacing: 2px;
-  border-radius: 40px;
-  border: none;
+  letter-spacing: 1.5px;
+  border-radius: 30px;
+  background: transparent;
+  border: 2px solid #53c2d7;
+  color: #53c2d7;
   cursor: pointer;
-  background: rgba(255,255,255,0.1);
-  color: white;
   transition: 0.3s;
 }
 
 button:hover {
+  background: #53c2d7;
+  color: #000;
   transform: scale(1.05);
-  background: rgba(255,255,255,0.25);
+}
+
+button.visited {
+  opacity: 0.5;
+}
+
+button.gold {
+  border-color: gold;
+  color: gold;
+}
+
+button.gold:hover {
+  background: gold;
+  color: #000;
+}
+
+button.locked {
+  opacity: 0.3;
+}
+
+#alert {
+  margin-top: 15px;
+  color: gold;
+  font-size: 16px;
 }
 
 /* ===== COLORES ÁREAS ===== */
-.comercial { color: #00f7ff; }
+.comercial { color: #53c2d7; }
 .mercadeo { color: #ff4fd8; }
 .operaciones { color: #4fff8f; }
 .desarrollo { color: #4fa3ff; }
@@ -125,7 +122,6 @@ button:hover {
 .gerencia { color: #ffffff; }
 .tiendas { color: gold; }
 
-/* ===== MOBILE ===== */
 @media (max-width:600px){
   .area-title { font-size: 28px; }
   p { font-size: 18px; }
@@ -135,128 +131,159 @@ button:hover {
 
 <body>
 
-<div id="universe"></div>
+<div id="stars"></div>
 
-<audio id="audio" loop>
+<audio id="audio">
   <source src="audio.mp3" type="audio/mpeg">
 </audio>
 
 <div id="app">
-  <div class="card" id="content">
+
+  <div id="menu">
     <h1>DINEGMA</h1>
-    <p>MISIÓN FINAL · 2025 → 2026</p>
-    <button onclick="start()">INICIAR EXPERIENCIA</button>
+    <p>MISIÓN FINAL · CIERRE 2025 / INICIO 2026</p>
+
+    <button onclick="playAudio()">🎧 Escuchar el mensaje</button>
+
+    <div class="menu-buttons">
+      <button onclick="openArea('comercial',this)">Comercial</button>
+      <button onclick="openArea('mercadeo',this)">Mercadeo & Visual</button>
+      <button onclick="openArea('operaciones',this)">Operaciones</button>
+      <button onclick="openArea('desarrollo',this)">Desarrollo</button>
+      <button onclick="openArea('finanzas',this)">Finanzas</button>
+      <button onclick="openArea('personas',this)">Personas</button>
+      <button onclick="openArea('gerencia',this)">Gerencia</button>
+      <button class="gold" onclick="openArea('tiendas',this)">Equipo de Tiendas</button>
+    </div>
+
+    <button id="unlock" class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
+    <div id="alert"></div>
   </div>
+
+  <div id="content" style="display:none;"></div>
+
 </div>
 
 <script>
 const audio = document.getElementById("audio");
+const menu = document.getElementById("menu");
 const content = document.getElementById("content");
+const alertBox = document.getElementById("alert");
 
-const flow = [
+const required = [
   "comercial","mercadeo","operaciones",
-  "desarrollo","finanzas","personas",
-  "gerencia","tiendas","final"
+  "desarrollo","finanzas","personas","gerencia","tiendas"
 ];
 
-let step = 0;
+const visited = new Set();
+
+function playAudio(){
+  audio.currentTime = 0;
+  audio.play();
+}
 
 const messages = {
   comercial: {
-    title: "Equipo Comercial",
-    text: "Gracias por estar al frente de los resultados, por empujar cada meta y por la formación que eleva al equipo cada día."
+    title:"Equipo Comercial",
+    text:`Gracias por estar al frente de los resultados todos los días.
+    Por empujar cada meta, sostener la presión y no dejar de avanzar.
+    Gracias también por el trabajo de formación, por desarrollar personas
+    y elevar el nivel del equipo para que cada logro tenga bases sólidas.`
   },
-  mercadeo: {
-    title: "Mercadeo & Visual Merchandising",
-    text: "Gracias por darle voz, imagen y emoción a nuestras marcas, y por convertir cada espacio en experiencia."
+  mercadeo:{
+    title:"Mercadeo & Visual Merchandising",
+    text:`Gracias por darle voz, imagen y emoción a nuestras marcas.
+    Por transformar ideas en experiencias, cuidar cada detalle
+    y hacer que la marca se viva en cada punto.`
   },
-  operaciones: {
-    title: "Operaciones, Producto, Bodega e Inventarios",
-    text: "Gracias por el orden, la precisión y el respaldo silencioso que sostiene todo."
+  operaciones:{
+    title:"Operaciones, Producto, Bodega e Inventarios",
+    text:`Gracias por el orden, la precisión y el trabajo constante.
+    Por cuidar procesos, producto y movimiento,
+    y ser el respaldo silencioso que sostiene toda la operación.`
   },
-  desarrollo: {
-    title: "Desarrollo",
-    text: "Gracias por impulsar la evolución, los sistemas y las mejoras que nos permiten crecer."
+  desarrollo:{
+    title:"Desarrollo",
+    text:`Gracias por impulsar la evolución, los sistemas
+    y las mejoras que nos permiten crecer,
+    adaptarnos y avanzar hacia el futuro.`
   },
-  finanzas: {
-    title: "Finanzas",
-    text: "Gracias por el control, la responsabilidad y la visión que mantiene el equilibrio."
+  finanzas:{
+    title:"Finanzas",
+    text:`Gracias por el control, la responsabilidad
+    y la visión que mantiene el equilibrio
+    y permite que la empresa crezca con estabilidad.`
   },
-  personas: {
-    title: "Personas & Asistencia al Personal",
-    text: "Gracias por cuidar la cultura, los procesos y a las personas que hacen posible Dinegma."
+  personas:{
+    title:"Personas & Asistencia al Personal",
+    text:`Gracias por cuidar la cultura, los procesos
+    y a cada persona que forma parte de Dinegma.
+    Por crear espacios donde se trabaja mejor cada día.`
   },
-  gerencia: {
-    title: "Gerencia",
-    text: "Gracias por liderar, decidir y marcar el rumbo con claridad."
+  gerencia:{
+    title:"Gerencia",
+    text:`Gracias por marcar el rumbo, asumir decisiones clave
+    y liderar con visión en cada etapa del año.`
   },
-  tiendas: {
-    title: "Equipo de Tiendas",
-    text: "Ustedes son el corazón de todo esto. Asesoras, asesores, administradores alternos y administradores que hacen que la marca viva cada día."
+  tiendas:{
+    title:"Equipo de Tiendas",
+    text:`Ustedes son el corazón de todo esto.
+    Asesoras, asesores, administradores alternos y administradores
+    que viven la tienda cada día y hacen que las marcas
+    Vélez, Hurley, Nava y Shopialo cobren vida frente al cliente.
+    Gracias por representar la marca con orgullo y compromiso.`
   }
 };
 
-function start(){
-  audio.play();
-  next();
-}
+function openArea(area,btn){
+  visited.add(area);
+  btn.classList.add("visited");
 
-function next(){
-  const key = flow[step];
-  if(key === "final"){
-    showFinal();
-    return;
-  }
-
-  const m = messages[key];
+  const m = messages[area];
+  menu.style.display = "none";
+  content.style.display = "block";
   content.innerHTML = `
-    <h2 class="area-title ${key}">${m.title}</h2>
+    <h2 class="area-title ${area}">${m.title}</h2>
     <p>${m.text}</p>
-    <button onclick="step++; next()">CONTINUAR</button>
+    <button onclick="backToMenu()">REGRESAR AL MENÚ</button>
   `;
 }
 
-function showFinal(){
+function backToMenu(){
+  content.style.display = "none";
+  menu.style.display = "block";
+}
+
+function unlock2026(){
+  if(visited.size < required.length){
+    alertBox.innerText = "Selecciona primero todas las áreas que fueron parte de este año 🙂";
+    return;
+  }
+
+  menu.style.display = "none";
+  content.style.display = "block";
   content.innerHTML = `
-    <h1 class="tiendas">BIENVENIDO DOS MIL VEINTISÉIS</h1>
+    <h1 class="tiendas">BIENVENIDO 2026</h1>
     <p>
-      Cerramos dos mil veinticinco con gratitud.<br>
-      Iniciamos dos mil veintiséis con energía, enfoque y equipo.<br><br>
+      Cerramos 2025 con gratitud.<br>
+      Iniciamos 2026 con energía, enfoque y equipo.<br><br>
       <strong>DINEGMA, VAMOS CON TODO.</strong>
     </p>
   `;
 }
 
-/* ===== UNIVERSO ===== */
-const universe = document.getElementById("universe");
+/* ===== ESTRELLAS ===== */
+const stars = document.getElementById("stars");
+const colors = ["#3b76aa","#53c2d7","gold"];
 
-// estrellas
 for(let i=0;i<120;i++){
   const s = document.createElement("div");
   s.className = "star";
   s.style.left = Math.random()*100+"%";
-  s.style.animationDuration = 20+Math.random()*40+"s";
-  universe.appendChild(s);
+  s.style.background = colors[Math.floor(Math.random()*colors.length)];
+  s.style.animationDuration = 20+Math.random()*30+"s";
+  stars.appendChild(s);
 }
-
-// planetas
-for(let i=0;i<2;i++){
-  const p = document.createElement("div");
-  p.className = "planet";
-  p.style.top = Math.random()*60+"%";
-  p.style.animationDuration = 100+Math.random()*100+"s";
-  universe.appendChild(p);
-}
-
-// estrellas fugaces
-setInterval(()=>{
-  const sh = document.createElement("div");
-  sh.className = "shooting-star";
-  sh.style.top = Math.random()*50+"%";
-  sh.style.left = Math.random()*50+"%";
-  universe.appendChild(sh);
-  setTimeout(()=>sh.remove(),2000);
-},8000);
 </script>
 
 </body>
