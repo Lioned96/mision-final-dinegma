@@ -10,302 +10,253 @@
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: radial-gradient(circle at top, #0b0f1a, #000);
+  font-family: 'Arial', sans-serif;
+  background: radial-gradient(circle at top, #050814, #000);
   color: #fff;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-#particles, #confetti {
+/* ===== UNIVERSO ===== */
+#universe {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
 }
 
-.particle {
+.star {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(0,247,255,0.6);
-  border-radius: 50%;
-  animation: float 20s linear infinite;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.6;
+  animation: drift 30s linear infinite;
 }
 
-@keyframes float {
+@keyframes drift {
   from { transform: translateY(100vh); }
-  to { transform: translateY(-100vh); }
+  to { transform: translateY(-120vh); }
 }
 
-.confetti {
+.shooting-star {
   position: absolute;
-  width: 6px;
-  height: 10px;
-  background: gold;
-  animation: confettiFall 3s ease-out forwards;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, white, transparent);
+  animation: shoot 2s ease-out forwards;
 }
 
-@keyframes confettiFall {
-  from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+@keyframes shoot {
+  from { opacity: 1; transform: translate(-50vw, -50vh); }
+  to { opacity: 0; transform: translate(50vw, 50vh); }
 }
 
+.planet {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+  animation: orbit 120s linear infinite;
+}
+
+@keyframes orbit {
+  from { transform: translateX(-20vw); }
+  to { transform: translateX(120vw); }
+}
+
+/* ===== APP ===== */
 #app {
   position: relative;
-  z-index: 1;
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  padding: 20px;
 }
 
-h1 { font-size: 42px; letter-spacing: 3px; }
-h2 { font-size: 28px; margin-top: 20px; }
-p  { font-size: 20px; line-height: 1.6; }
+.card {
+  max-width: 720px;
+  width: 100%;
+}
 
-.subtitle { opacity: 0.75; }
+h1 {
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+}
 
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 15px;
-  margin-top: 30px;
+.area-title {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 20px;
+  line-height: 1.6;
 }
 
 button {
-  padding: 18px;
+  margin-top: 30px;
+  padding: 16px 32px;
   font-size: 14px;
-  letter-spacing: 1.5px;
-  background: transparent;
-  border: 2px solid #00f7ff;
-  color: #00f7ff;
+  letter-spacing: 2px;
+  border-radius: 40px;
+  border: none;
   cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  color: white;
   transition: 0.3s;
 }
 
 button:hover {
-  background: #00f7ff;
-  color: #000;
   transform: scale(1.05);
+  background: rgba(255,255,255,0.25);
 }
 
-button.selected {
-  background: #00f7ff;
-  color: #000;
-}
+/* ===== COLORES ÁREAS ===== */
+.comercial { color: #00f7ff; }
+.mercadeo { color: #ff4fd8; }
+.operaciones { color: #4fff8f; }
+.desarrollo { color: #4fa3ff; }
+.finanzas { color: gold; }
+.personas { color: #ff9acb; }
+.gerencia { color: #ffffff; }
+.tiendas { color: gold; }
 
-button.gold {
-  border-color: gold;
-  color: gold;
-}
-
-button.gold:hover {
-  background: gold;
-  color: #000;
-}
-
-button.locked {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-#message {
-  margin-top: 40px;
-  animation: fadeIn 0.6s ease;
-}
-
-#alert {
-  margin-top: 20px;
-  color: gold;
-  font-size: 16px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+/* ===== MOBILE ===== */
 @media (max-width:600px){
-  h1 { font-size: 34px; }
-  h2 { font-size: 24px; }
-  p  { font-size: 18px; }
+  .area-title { font-size: 28px; }
+  p { font-size: 18px; }
 }
 </style>
 </head>
 
 <body>
 
-<div id="particles"></div>
-<div id="confetti"></div>
+<div id="universe"></div>
 
 <audio id="audio" loop>
   <source src="audio.mp3" type="audio/mpeg">
 </audio>
 
 <div id="app">
-  <h1>DINEGMA</h1>
-  <p class="subtitle">MISIÓN FINAL · 2025 → 2026</p>
-
-  <button onclick="start()">INICIAR EXPERIENCIA</button>
-
-  <div id="menu" style="display:none;">
-    <div class="buttons">
-      <button onclick="selectArea('comercial',this)">Comercial</button>
-      <button onclick="selectArea('mercadeo',this)">Mercadeo & Visual</button>
-      <button onclick="selectArea('operaciones',this)">Operaciones</button>
-      <button onclick="selectArea('desarrollo',this)">Desarrollo & Finanzas</button>
-      <button onclick="selectArea('personas',this)">Personas</button>
-      <button onclick="selectArea('gerencia',this)">Gerencia</button>
-      <button class="gold" onclick="selectArea('tiendas',this)">Equipo de Tiendas</button>
-    </div>
-
-    <button id="unlock" class="gold locked" onclick="unlock2026()">DESBLOQUEAR 2026</button>
-    <div id="alert"></div>
+  <div class="card" id="content">
+    <h1>DINEGMA</h1>
+    <p>MISIÓN FINAL · 2025 → 2026</p>
+    <button onclick="start()">INICIAR EXPERIENCIA</button>
   </div>
-
-  <div id="message"></div>
 </div>
 
 <script>
 const audio = document.getElementById("audio");
-const unlockBtn = document.getElementById("unlock");
-const alertBox = document.getElementById("alert");
+const content = document.getElementById("content");
 
-const requiredAreas = [
+const flow = [
   "comercial","mercadeo","operaciones",
-  "desarrollo","personas","gerencia","tiendas"
+  "desarrollo","finanzas","personas",
+  "gerencia","tiendas","final"
 ];
 
-const visited = new Set();
+let step = 0;
+
+const messages = {
+  comercial: {
+    title: "Equipo Comercial",
+    text: "Gracias por estar al frente de los resultados, por empujar cada meta y por la formación que eleva al equipo cada día."
+  },
+  mercadeo: {
+    title: "Mercadeo & Visual Merchandising",
+    text: "Gracias por darle voz, imagen y emoción a nuestras marcas, y por convertir cada espacio en experiencia."
+  },
+  operaciones: {
+    title: "Operaciones, Producto, Bodega e Inventarios",
+    text: "Gracias por el orden, la precisión y el respaldo silencioso que sostiene todo."
+  },
+  desarrollo: {
+    title: "Desarrollo",
+    text: "Gracias por impulsar la evolución, los sistemas y las mejoras que nos permiten crecer."
+  },
+  finanzas: {
+    title: "Finanzas",
+    text: "Gracias por el control, la responsabilidad y la visión que mantiene el equilibrio."
+  },
+  personas: {
+    title: "Personas & Asistencia al Personal",
+    text: "Gracias por cuidar la cultura, los procesos y a las personas que hacen posible Dinegma."
+  },
+  gerencia: {
+    title: "Gerencia",
+    text: "Gracias por liderar, decidir y marcar el rumbo con claridad."
+  },
+  tiendas: {
+    title: "Equipo de Tiendas",
+    text: "Ustedes son el corazón de todo esto. Asesoras, asesores, administradores alternos y administradores que hacen que la marca viva cada día."
+  }
+};
 
 function start(){
   audio.play();
-  document.getElementById("menu").style.display = "block";
+  next();
 }
 
-const messages = {
-  comercial: `
-  <h2>Equipo Comercial</h2>
-  <p>
-  Gracias por estar al frente de los resultados todos los días.
-  Por salir a buscar oportunidades, sostener la presión
-  y no dejar de empujar incluso en los momentos más retadores.
-  Gracias también por el trabajo de formación,
-  por acompañar, desarrollar y elevar al equipo
-  para que cada meta tenga personas preparadas detrás.
-  </p>`,
-
-  mercadeo: `
-  <h2>Mercadeo & Visual Merchandising</h2>
-  <p>
-  Gracias por darle voz, imagen y emoción a nuestras marcas.
-  Por transformar ideas en experiencias,
-  por cuidar cada detalle visual
-  y por hacer que la marca se sienta viva en cada espacio.
-  </p>`,
-
-  operaciones: `
-  <h2>Operaciones, Producto, Bodega e Inventarios</h2>
-  <p>
-  Gracias por el orden, la precisión y el trabajo constante.
-  Por cuidar procesos, producto y movimiento,
-  y por ser el respaldo silencioso
-  que permite que todo funcione correctamente.
-  </p>`,
-
-  desarrollo: `
-  <h2>Desarrollo & Finanzas</h2>
-  <p>
-  Gracias por la visión, el control y la evolución.
-  Por construir herramientas, cuidar recursos
-  y tomar decisiones que permiten crecer con equilibrio
-  y pensar siempre en el futuro.
-  </p>`,
-
-  personas: `
-  <h2>Personas & Asistencia al Personal</h2>
-  <p>
-  Gracias por cuidar la cultura, los procesos
-  y a cada persona que forma parte de Dinegma.
-  Por crear espacios donde se trabaja mejor,
-  con orden, acompañamiento y humanidad.
-  </p>`,
-
-  gerencia: `
-  <h2>Gerencia</h2>
-  <p>
-  Gracias por marcar el rumbo,
-  asumir decisiones complejas
-  y liderar con visión en cada etapa del año.
-  Su guía permitió avanzar con claridad y enfoque.
-  </p>`,
-
-  tiendas: `
-  <h2>Equipo de Tiendas</h2>
-  <p>
-  Ustedes son el corazón de todo esto.
-  Asesoras y asesores que están al frente cada día,
-  atendiendo, vendiendo y representando la marca con orgullo.
-  Administradores alternos que sostienen la operación
-  y lideran cuando más se necesita.
-  Administradores que guían, forman
-  y mantienen a sus equipos en movimiento.
-  Gracias por hacerlo posible, día tras día.
-  </p>`
-};
-
-function selectArea(area, btn){
-  visited.add(area);
-  btn.classList.add("selected");
-  document.getElementById("message").innerHTML = messages[area];
-
-  if(visited.size === requiredAreas.length){
-    unlockBtn.classList.remove("locked");
-    alertBox.innerText = "";
-  }
-}
-
-function unlock2026(){
-  if(visited.size < requiredAreas.length){
-    alertBox.innerText =
-      "Selecciona primero cada área que fue parte de este año.";
+function next(){
+  const key = flow[step];
+  if(key === "final"){
+    showFinal();
     return;
   }
 
-  launchConfetti();
-  document.getElementById("message").innerHTML = `
-    <h1>BIENVENIDO DOS MIL VEINTISÉIS</h1>
+  const m = messages[key];
+  content.innerHTML = `
+    <h2 class="area-title ${key}">${m.title}</h2>
+    <p>${m.text}</p>
+    <button onclick="step++; next()">CONTINUAR</button>
+  `;
+}
+
+function showFinal(){
+  content.innerHTML = `
+    <h1 class="tiendas">BIENVENIDO DOS MIL VEINTISÉIS</h1>
     <p>
-    Cerramos dos mil veinticinco con gratitud.<br>
-    Iniciamos dos mil veintiséis con enfoque, energía y equipo.<br><br>
-    <strong>DINEGMA, VAMOS CON TODO.</strong>
+      Cerramos dos mil veinticinco con gratitud.<br>
+      Iniciamos dos mil veintiséis con energía, enfoque y equipo.<br><br>
+      <strong>DINEGMA, VAMOS CON TODO.</strong>
     </p>
   `;
 }
 
-function launchConfetti(){
-  const confetti = document.getElementById("confetti");
-  for(let i=0;i<140;i++){
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random()*100+"%";
-    c.style.background =
-      ["gold","#00f7ff","#ffffff"][Math.floor(Math.random()*3)];
-    c.style.animationDuration = 2+Math.random()*2+"s";
-    confetti.appendChild(c);
-    setTimeout(()=>c.remove(),4000);
-  }
+/* ===== UNIVERSO ===== */
+const universe = document.getElementById("universe");
+
+// estrellas
+for(let i=0;i<120;i++){
+  const s = document.createElement("div");
+  s.className = "star";
+  s.style.left = Math.random()*100+"%";
+  s.style.animationDuration = 20+Math.random()*40+"s";
+  universe.appendChild(s);
 }
 
-// partículas fondo
-const particles = document.getElementById("particles");
-for(let i=0;i<100;i++){
+// planetas
+for(let i=0;i<2;i++){
   const p = document.createElement("div");
-  p.className = "particle";
-  p.style.left = Math.random()*100+"%";
-  p.style.animationDuration = 15+Math.random()*20+"s";
-  particles.appendChild(p);
+  p.className = "planet";
+  p.style.top = Math.random()*60+"%";
+  p.style.animationDuration = 100+Math.random()*100+"s";
+  universe.appendChild(p);
 }
+
+// estrellas fugaces
+setInterval(()=>{
+  const sh = document.createElement("div");
+  sh.className = "shooting-star";
+  sh.style.top = Math.random()*50+"%";
+  sh.style.left = Math.random()*50+"%";
+  universe.appendChild(sh);
+  setTimeout(()=>sh.remove(),2000);
+},8000);
 </script>
 
 </body>
