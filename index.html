@@ -39,18 +39,36 @@ p{font-size:20px;line-height:1.65}
 
 /* ===== BOTONES ===== */
 button{
-  padding:16px 34px;font-size:14px;letter-spacing:1.5px;
-  border-radius:32px;background:transparent;
-  border:2px solid #53c2d7;color:#53c2d7;
-  cursor:pointer;transition:.3s
+  padding:14px 28px;
+  font-size:13px;
+  letter-spacing:1.5px;
+  border-radius:30px;
+  background:transparent;
+  border:2px solid #53c2d7;
+  color:#53c2d7;
+  cursor:pointer;
+  transition:.3s
 }
-button:hover{background:#53c2d7;color:#000;transform:scale(1.05)}
-button.gold{border-color:gold;color:gold}
-button.gold:hover{background:gold;color:#000}
+button:hover{
+  background:#53c2d7;
+  color:#000;
+  transform:scale(1.05)
+}
+button.gold{
+  border-color:gold;
+  color:gold
+}
+button.gold:hover{
+  background:gold;
+  color:#000
+}
 button.visited{opacity:.5}
+
 .menu-buttons{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;margin-top:30px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin-top:30px
 }
 #alert{margin-top:15px;color:gold}
 
@@ -64,41 +82,40 @@ button.visited{opacity:.5}
 .gerencia{color:#ffffff}
 .tiendas{color:gold}
 
-/* ===== ROMPECABEZAS ===== */
-#puzzle{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  max-width:360px;
-  margin:40px auto
+/* ===== AHORCADO ===== */
+#word{
+  font-size:32px;
+  letter-spacing:10px;
+  margin:30px 0;
 }
-.piece{
-  background:linear-gradient(135deg,#3b76aa,#53c2d7);
-  border-radius:12px;
-  padding:35px 0;
-  font-size:22px;
-  cursor:pointer;
-  user-select:none;
-  transition:.3s;
+.keyboard{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  max-width:600px;
+  margin:auto
 }
-.piece.selected{
-  outline:3px solid gold;
-  transform:scale(1.05);
+.keyboard button{
+  width:44px;
+  height:44px;
+  padding:0;
+  border-radius:50%;
+  font-size:14px
 }
 
-/* ===== EXPLOSIÓN ===== */
+/* ===== EXPLOSION ===== */
 .burst{
-  position:fixed;width:8px;height:8px;border-radius:50%;
-  animation:burst 1.4s ease-out forwards;z-index:6
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  animation:burst 1.5s ease-out forwards;
+  z-index:6
 }
 @keyframes burst{
   from{transform:translate(0,0) scale(1);opacity:1}
   to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}
-}
-
-@media(max-width:600px){
-  .area-title{font-size:28px}
-  p{font-size:18px}
 }
 </style>
 </head>
@@ -114,10 +131,8 @@ button.visited{opacity:.5}
 <div id="app">
 
   <!-- HEADER -->
-  <div id="header">
-    <h1>DINEGMA</h1>
-    <div class="subtitle">MISIÓN FINAL · CIERRE 2025 / INICIO 2026</div>
-  </div>
+  <h1>DINEGMA</h1>
+  <div class="subtitle">MISIÓN FINAL · CIERRE 2025 / INICIO 2026</div>
 
   <!-- INTRO -->
   <div id="intro">
@@ -140,7 +155,7 @@ button.visited{opacity:.5}
     </div>
 
     <div style="margin:55px 0;">
-      <button class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
+      <button class="gold" onclick="startHangman()">DESBLOQUEAR 2026</button>
       <div id="alert"></div>
     </div>
   </div>
@@ -165,113 +180,95 @@ function startMission(){
   menu.style.display="block";
   audio.play();
 }
-function playAudio(){audio.currentTime=0;audio.play();}
+function playAudio(){
+  audio.currentTime=0;
+  audio.play();
+}
 
-/* ===== MENSAJES (RESUMIDOS AQUÍ PARA FOCO EN PUZZLE) ===== */
-const messages={
-  comercial:{title:"Equipo Comercial",text:"Gracias por empujar resultados y formar al equipo."},
-  mercadeo:{title:"Mercadeo & Visual",text:"Gracias por darle voz y experiencia a la marca."},
-  operaciones:{title:"Operaciones",text:"Gracias por el orden y la precisión diaria."},
-  desarrollo:{title:"Desarrollo",text:"Gracias por impulsar la evolución."},
-  finanzas:{title:"Finanzas",text:"Gracias por el equilibrio y la visión."},
-  personas:{title:"Personas",text:"Gracias por cuidar la cultura."},
-  gerencia:{title:"Gerencia",text:"Gracias por liderar y marcar el rumbo."},
-  tiendas:{title:"Equipo de Tiendas",text:"Gracias por hacer vivir las marcas cada día."}
-};
-
+/* ===== AREAS (abreviadas para foco final) ===== */
 function openArea(area,btn){
   visited.add(area);
   btn.classList.add("visited");
-  menu.style.display="none";
-  content.style.display="block";
-  const m=messages[area];
-  content.innerHTML=`
-    <h2 class="area-title ${area}">${m.title}</h2>
-    <p>${m.text}</p>
-    <button onclick="backToMenu()">REGRESAR AL MENÚ</button>
-  `;
-}
-function backToMenu(){
-  content.style.display="none";
-  menu.style.display="block";
+  alertBox.innerText="";
 }
 
-/* ===== ROMPECABEZAS ===== */
-let selectedPiece=null;
-const goal=[1,2,3,4,5,6,7,8,9];
-let puzzle=[...goal].sort(()=>Math.random()-.5);
+/* ===== AHORCADO ===== */
+const phrase="DINEGMA JUNTOS TRIUNFAMOS";
+let guessed=[];
 
-function unlock2026(){
+function startHangman(){
   if(visited.size<required.length){
     alertBox.innerText="Selecciona primero todas las áreas 🙂";
     return;
   }
   menu.style.display="none";
   content.style.display="block";
-  renderPuzzle();
+  guessed=[];
+  renderHangman();
 }
 
-function renderPuzzle(){
-  content.innerHTML=`
-    <h2 class="area-title tiendas">UNE EL EQUIPO</h2>
-    <p>Arma el rompecabezas para dar la bienvenida a 2026.</p>
-    <div id="puzzle"></div>
-  `;
-  const grid=document.getElementById("puzzle");
-  grid.innerHTML="";
-  puzzle.forEach((n,i)=>{
-    const d=document.createElement("div");
-    d.className="piece";
-    d.innerText=n;
-    d.onclick=()=>selectPiece(i,d);
-    grid.appendChild(d);
-  });
-}
-
-function selectPiece(index,el){
-  if(selectedPiece===null){
-    selectedPiece={index,el};
-    el.classList.add("selected");
-  }else{
-    [puzzle[selectedPiece.index],puzzle[index]]=[puzzle[index],puzzle[selectedPiece.index]];
-    selectedPiece.el.classList.remove("selected");
-    selectedPiece=null;
-    renderPuzzle();
-    checkSolved();
+function renderHangman(){
+  let display="";
+  for(let c of phrase){
+    if(c===" ") display+="&nbsp;&nbsp;";
+    else if(guessed.includes(c)) display+=c+" ";
+    else display+="_ ";
   }
+
+  content.innerHTML=`
+    <h2 class="area-title tiendas">DESCUBRE EL MENSAJE</h2>
+    <div id="word">${display}</div>
+    <div class="keyboard">${generateKeyboard()}</div>
+  `;
+}
+
+function generateKeyboard(){
+  return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(l=>{
+    return `<button onclick="guess('${l}',this)">${l}</button>`;
+  }).join("");
+}
+
+function guess(letter,btn){
+  guessed.push(letter);
+  btn.disabled=true;
+  renderHangman();
+  checkSolved();
 }
 
 function checkSolved(){
-  if(puzzle.every((v,i)=>v===goal[i])){
-    newYearExplosion();
-    content.innerHTML=`
-      <h1 class="tiendas">¡FELIZ 2026!</h1>
-      <p>
-        Gracias por todo lo construido en 2025.<br>
-        Este logro es de todos.<br><br>
-        En 2026 seguimos juntos, creciendo y triunfando una vez más.<br><br>
-        <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
-      </p>
-      <button class="gold" style="margin-top:30px" onclick="goHome()">VOLVER AL INICIO</button>
-    `;
+  for(let c of phrase){
+    if(c!==" " && !guessed.includes(c)) return;
   }
+  newYearExplosion();
+  content.innerHTML=`
+    <h1 class="tiendas">¡FELIZ 2026!</h1>
+    <p>
+      Gracias por todo lo construido en 2025.<br>
+      Este logro es de todos.<br><br>
+      En 2026 seguimos juntos,
+      creciendo y triunfando una vez más.<br><br>
+      <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
+    </p>
+    <button class="gold" style="margin-top:30px" onclick="goHome()">VOLVER AL INICIO</button>
+  `;
 }
+
 function goHome(){
   content.style.display="none";
   menu.style.display="block";
 }
 
-/* ===== EXPLOSIÓN ===== */
+/* ===== EXPLOSION ===== */
 function newYearExplosion(){
   const colors=["gold","#53c2d7","#3b76aa"];
-  for(let i=0;i<220;i++){
+  for(let i=0;i<260;i++){
     const b=document.createElement("div");
     b.className="burst";
     b.style.background=colors[Math.floor(Math.random()*3)];
     b.style.left="50%";
     b.style.top="50%";
-    b.style.setProperty("--x",(Math.random()*600-300)+"px");
-    b.style.setProperty("--y",(Math.random()*600-300)+"px");
+    b.style.setProperty("--x",(Math.random()*800-400)+"px");
+    b.style.setProperty("--y",(Math.random()*800-400)+"px");
     document.body.appendChild(b);
     setTimeout(()=>b.remove(),1500);
   }
@@ -279,12 +276,12 @@ function newYearExplosion(){
 
 /* ===== ESTRELLAS ===== */
 const stars=document.getElementById("stars");
-const colors=["#3b76aa","#53c2d7","gold"];
+const starColors=["#3b76aa","#53c2d7","gold"];
 for(let i=0;i<140;i++){
   const s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
-  s.style.background=colors[Math.floor(Math.random()*3)];
+  s.style.background=starColors[Math.floor(Math.random()*3)];
   s.style.animationDuration=20+Math.random()*40+"s";
   stars.appendChild(s);
 }
