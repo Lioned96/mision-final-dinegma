@@ -6,139 +6,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: radial-gradient(circle at top, #050814, #000);
-  color: #fff;
-  overflow-x: hidden;
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at top,#050814,#000);
+  color:#fff;
+  overflow-x:hidden;
 }
 
-/* ===== ESTRELLAS ===== */
-#stars {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* ===== FONDO ESTRELLAS ===== */
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  animation:float 30s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-120vh)}
 }
 
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  animation: float 25s linear infinite;
+/* ===== EXPLOSION 2026 ===== */
+.burst{
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  animation:burst 1.5s ease-out forwards;
+  z-index:6;
 }
-
-@keyframes float {
-  from { transform: translateY(110vh); }
-  to { transform: translateY(-120vh); }
-}
-
-/* ===== CONFETI ===== */
-.confetti {
-  position: fixed;
-  width: 6px;
-  height: 10px;
-  background: gold;
-  animation: fall 3s ease-out forwards;
-  z-index: 5;
-}
-
-@keyframes fall {
-  from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+@keyframes burst{
+  from{transform:translate(0,0) scale(1);opacity:1}
+  to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}
 }
 
 /* ===== APP ===== */
-#app {
-  position: relative;
-  z-index: 2;
-  max-width: 900px;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
+#app{
+  position:relative;
+  z-index:2;
+  max-width:900px;
+  margin:auto;
+  padding:40px 20px;
+  text-align:center;
 }
 
-h1 {
-  font-size: 42px;
-  letter-spacing: 3px;
+h1{
+  font-size:42px;
+  letter-spacing:3px;
+  margin-bottom:5px;
+}
+.subtitle{
+  opacity:.8;
+  margin-bottom:30px;
 }
 
-.area-title {
-  font-size: 36px;
-  margin-bottom: 20px;
+.area-title{
+  font-size:34px;
+  margin-bottom:20px;
 }
-
-p {
-  font-size: 20px;
-  line-height: 1.6;
+p{
+  font-size:20px;
+  line-height:1.65;
 }
 
 /* ===== BOTONES ===== */
-button {
-  padding: 16px 30px;
-  font-size: 14px;
-  letter-spacing: 1.5px;
-  border-radius: 30px;
-  background: transparent;
-  border: 2px solid #53c2d7;
-  color: #53c2d7;
-  cursor: pointer;
-  transition: 0.3s;
+button{
+  padding:16px 34px;
+  font-size:14px;
+  letter-spacing:1.5px;
+  border-radius:32px;
+  background:transparent;
+  border:2px solid #53c2d7;
+  color:#53c2d7;
+  cursor:pointer;
+  transition:.3s;
 }
-
-button:hover {
-  background: #53c2d7;
-  color: #000;
-  transform: scale(1.05);
+button:hover{
+  background:#53c2d7;
+  color:#000;
+  transform:scale(1.05);
 }
-
-button.visited {
-  opacity: 0.5;
+button.visited{opacity:.5}
+button.gold{
+  border-color:gold;
+  color:gold;
 }
-
-button.gold {
-  border-color: gold;
-  color: gold;
+button.gold:hover{
+  background:gold;
+  color:#000;
 }
-
-button.gold:hover {
-  background: gold;
-  color: #000;
+.menu-buttons{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin-top:30px;
 }
-
-button.locked {
-  opacity: 0.3;
-}
-
-.menu-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 15px;
-  margin-top: 30px;
-}
-
-#alert {
-  margin-top: 15px;
-  color: gold;
+#alert{
+  margin-top:15px;
+  color:gold;
 }
 
 /* ===== COLORES ===== */
-.comercial { color: #53c2d7; }
-.mercadeo { color: #ff4fd8; }
-.operaciones { color: #4fff8f; }
-.desarrollo { color: #4fa3ff; }
-.finanzas { color: gold; }
-.personas { color: #ff9acb; }
-.gerencia { color: #ffffff; }
-.tiendas { color: gold; }
+.comercial{color:#53c2d7}
+.mercadeo{color:#ff4fd8}
+.operaciones{color:#4fff8f}
+.desarrollo{color:#4fa3ff}
+.finanzas{color:gold}
+.personas{color:#ff9acb}
+.gerencia{color:#ffffff}
+.tiendas{color:gold}
 
-@media (max-width:600px){
-  .area-title { font-size: 28px; }
-  p { font-size: 18px; }
+@media(max-width:600px){
+  .area-title{font-size:28px}
+  p{font-size:18px}
 }
 </style>
 </head>
@@ -153,10 +142,14 @@ button.locked {
 
 <div id="app">
 
+  <!-- HEADER FIJO -->
+  <div id="header">
+    <h1>DINEGMA</h1>
+    <div class="subtitle">MISIÓN FINAL · CIERRE 2025 / INICIO 2026</div>
+  </div>
+
   <!-- INTRO -->
   <div id="intro">
-    <h1>DINEGMA</h1>
-    <p>MISIÓN FINAL · CIERRE 2025 / INICIO 2026</p>
     <button class="gold" onclick="startMission()">INICIAR MISIÓN</button>
   </div>
 
@@ -175,47 +168,97 @@ button.locked {
       <button class="gold" onclick="openArea('tiendas',this)">Equipo de Tiendas</button>
     </div>
 
-    <div style="margin:50px 0;">
-      <button id="unlock" class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
+    <div style="margin:55px 0;">
+      <button class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
       <div id="alert"></div>
     </div>
   </div>
 
-  <!-- CONTENIDO -->
+  <!-- CONTENT -->
   <div id="content" style="display:none;"></div>
 
 </div>
 
 <script>
-const audio = document.getElementById("audio");
-const intro = document.getElementById("intro");
-const menu = document.getElementById("menu");
-const content = document.getElementById("content");
-const alertBox = document.getElementById("alert");
+const audio=document.getElementById("audio");
+const intro=document.getElementById("intro");
+const menu=document.getElementById("menu");
+const content=document.getElementById("content");
+const alertBox=document.getElementById("alert");
 
-const required = ["comercial","mercadeo","operaciones","desarrollo","finanzas","personas","gerencia","tiendas"];
-const visited = new Set();
+const required=["comercial","mercadeo","operaciones","desarrollo","finanzas","personas","gerencia","tiendas"];
+const visited=new Set();
 
 function startMission(){
-  intro.style.display = "none";
-  menu.style.display = "block";
+  intro.style.display="none";
+  menu.style.display="block";
   audio.play();
 }
-
 function playAudio(){
-  audio.currentTime = 0;
+  audio.currentTime=0;
   audio.play();
 }
 
-const messages = {
-  comercial:{ title:"Equipo Comercial", text:"Gracias por empujar resultados, sostener la presión y formar al equipo para alcanzar cada meta." },
-  mercadeo:{ title:"Mercadeo & Visual Merchandising", text:"Gracias por darle voz, imagen y experiencia a nuestras marcas." },
-  operaciones:{ title:"Operaciones, Producto, Bodega e Inventarios", text:"Gracias por el orden, la precisión y el respaldo que sostiene todo." },
-  desarrollo:{ title:"Desarrollo", text:"Gracias por impulsar la evolución y las mejoras que nos permiten crecer." },
-  finanzas:{ title:"Finanzas", text:"Gracias por el control, la responsabilidad y la visión que mantiene el equilibrio." },
-  personas:{ title:"Personas & Asistencia al Personal", text:"Gracias por cuidar la cultura, los procesos y a las personas." },
-  gerencia:{ title:"Gerencia", text:"Gracias por liderar, decidir y marcar el rumbo." },
-  tiendas:{ title:"Equipo de Tiendas", text:"Gracias por dar vida a Vélez, Hurley, Nava y Shopialo cada día frente al cliente." }
+/* ===== MENSAJES EXTENDIDOS ===== */
+const messages={
+comercial:{
+title:"Equipo Comercial",
+text:`Gracias por estar al frente de los resultados todos los días.
+Por salir a buscar oportunidades, sostener la presión y no dejar de empujar.
+Gracias por la energía, la constancia y el enfoque.
+Y gracias también por el trabajo de formación,
+por acompañar, desarrollar y elevar al equipo,
+asegurando que cada meta tenga personas preparadas detrás.`
+},
+mercadeo:{
+title:"Mercadeo & Visual Merchandising",
+text:`Gracias por darle voz, imagen y emoción a nuestras marcas.
+Por conectar ideas con personas,
+por transformar espacios en experiencias
+y por cuidar cada detalle que hace que la marca se sienta viva.`
+},
+operaciones:{
+title:"Operaciones, Producto, Bodega e Inventarios",
+text:`Gracias por el orden, la precisión y el trabajo constante.
+Por cuidar procesos, producto y movimiento,
+y por ser el respaldo silencioso que sostiene toda la operación día a día.`
+},
+desarrollo:{
+title:"Desarrollo",
+text:`Gracias por impulsar la evolución,
+los sistemas, las mejoras y las soluciones.
+Por empujar a la empresa hacia el futuro
+y permitirnos crecer, adaptarnos y avanzar.`
+},
+finanzas:{
+title:"Finanzas",
+text:`Gracias por el control, la responsabilidad y la visión.
+Por cuidar los recursos, el equilibrio
+y asegurar la estabilidad que nos permite crecer con solidez.`
+},
+personas:{
+title:"Personas & Asistencia al Personal",
+text:`Gracias por cuidar la cultura, los procesos y a las personas.
+Por acompañar, ordenar y crear espacios
+donde se puede trabajar mejor cada día.`
+},
+gerencia:{
+title:"Gerencia",
+text:`Gracias por marcar el rumbo cuando no siempre es claro.
+Por tomar decisiones complejas,
+por sostener la visión en los momentos difíciles
+y por liderar con responsabilidad, criterio y compromiso.
+Su dirección permite que todo el equipo avance unido.`
+},
+tiendas:{
+title:"Equipo de Tiendas",
+text:`Ustedes son el corazón de todo esto.
+Asesoras, asesores, administradores alternos y administradores
+que están al frente cada día, con clientes reales, metas reales y retos reales.
+Gracias por hacer que Vélez, Hurley, Nava y Shopialo
+cobren vida en cada tienda, en cada venta y en cada experiencia.
+Su esfuerzo, actitud y compromiso hacen que todo lo demás tenga sentido.`
+}
 };
 
 function openArea(area,btn){
@@ -223,8 +266,8 @@ function openArea(area,btn){
   btn.classList.add("visited");
   menu.style.display="none";
   content.style.display="block";
-  const m = messages[area];
-  content.innerHTML = `
+  const m=messages[area];
+  content.innerHTML=`
     <h2 class="area-title ${area}">${m.title}</h2>
     <p>${m.text}</p>
     <button onclick="backToMenu()">REGRESAR AL MENÚ</button>
@@ -236,21 +279,23 @@ function backToMenu(){
   menu.style.display="block";
 }
 
+/* ===== FELIZ AÑO NUEVO ===== */
 function unlock2026(){
-  if(visited.size < required.length){
+  if(visited.size<required.length){
     alertBox.innerText="Selecciona primero todas las áreas que fueron parte de este año 🙂";
     return;
   }
-  launchConfetti();
+  newYearExplosion();
   menu.style.display="none";
   content.style.display="block";
   content.innerHTML=`
-    <h1 class="tiendas">BIENVENIDO 2026</h1>
+    <h1 class="tiendas">¡FELIZ 2026!</h1>
     <p>
-      Gracias por todo lo construido en 2025.<br>
-      Felicitaciones por el esfuerzo, el compromiso y el equipo que somos.<br><br>
-      En 2026 seguimos juntos, creciendo y triunfando una vez más.<br><br>
-      <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
+    Gracias por todo lo construido en 2025.<br>
+    Felicitaciones por el esfuerzo, la dedicación y el equipo que somos.<br><br>
+    En este nuevo año seguimos juntos,
+    creciendo, aprendiendo y triunfando una vez más.<br><br>
+    <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
     </p>
     <button class="gold" onclick="goHome()">VOLVER AL MENÚ PRINCIPAL</button>
   `;
@@ -261,26 +306,30 @@ function goHome(){
   menu.style.display="block";
 }
 
-function launchConfetti(){
-  for(let i=0;i<160;i++){
-    const c=document.createElement("div");
-    c.className="confetti";
-    c.style.left=Math.random()*100+"%";
-    c.style.background=["gold","#53c2d7","#3b76aa"][Math.floor(Math.random()*3)];
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),4000);
+function newYearExplosion(){
+  const colors=["gold","#53c2d7","#3b76aa"];
+  for(let i=0;i<220;i++){
+    const b=document.createElement("div");
+    b.className="burst";
+    b.style.background=colors[Math.floor(Math.random()*3)];
+    b.style.left="50%";
+    b.style.top="50%";
+    b.style.setProperty("--x",(Math.random()*600-300)+"px");
+    b.style.setProperty("--y",(Math.random()*600-300)+"px");
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(),1500);
   }
 }
 
-/* estrellas */
+/* ===== ESTRELLAS ===== */
 const stars=document.getElementById("stars");
 const colors=["#3b76aa","#53c2d7","gold"];
-for(let i=0;i<120;i++){
+for(let i=0;i<140;i++){
   const s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
   s.style.background=colors[Math.floor(Math.random()*3)];
-  s.style.animationDuration=20+Math.random()*30+"s";
+  s.style.animationDuration=20+Math.random()*40+"s";
   stars.appendChild(s);
 }
 </script>
