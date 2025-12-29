@@ -16,7 +16,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== FONDO ESTRELLAS ===== */
+/* ===== ESTRELLAS ===== */
 #stars {
   position: fixed;
   inset: 0;
@@ -35,6 +35,21 @@ body {
 @keyframes float {
   from { transform: translateY(110vh); }
   to { transform: translateY(-120vh); }
+}
+
+/* ===== CONFETI ===== */
+.confetti {
+  position: fixed;
+  width: 6px;
+  height: 10px;
+  background: gold;
+  animation: fall 3s ease-out forwards;
+  z-index: 5;
+}
+
+@keyframes fall {
+  from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
 /* ===== APP ===== */
@@ -63,13 +78,6 @@ p {
 }
 
 /* ===== BOTONES ===== */
-.menu-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 15px;
-  margin-top: 30px;
-}
-
 button {
   padding: 16px 30px;
   font-size: 14px;
@@ -106,13 +114,19 @@ button.locked {
   opacity: 0.3;
 }
 
+.menu-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 15px;
+  margin-top: 30px;
+}
+
 #alert {
   margin-top: 15px;
   color: gold;
-  font-size: 16px;
 }
 
-/* ===== COLORES ÁREAS ===== */
+/* ===== COLORES ===== */
 .comercial { color: #53c2d7; }
 .mercadeo { color: #ff4fd8; }
 .operaciones { color: #4fff8f; }
@@ -139,10 +153,15 @@ button.locked {
 
 <div id="app">
 
-  <div id="menu">
+  <!-- INTRO -->
+  <div id="intro">
     <h1>DINEGMA</h1>
     <p>MISIÓN FINAL · CIERRE 2025 / INICIO 2026</p>
+    <button class="gold" onclick="startMission()">INICIAR MISIÓN</button>
+  </div>
 
+  <!-- MENU -->
+  <div id="menu" style="display:none;">
     <button onclick="playAudio()">🎧 Escuchar el mensaje</button>
 
     <div class="menu-buttons">
@@ -156,26 +175,32 @@ button.locked {
       <button class="gold" onclick="openArea('tiendas',this)">Equipo de Tiendas</button>
     </div>
 
-    <button id="unlock" class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
-    <div id="alert"></div>
+    <div style="margin:50px 0;">
+      <button id="unlock" class="gold" onclick="unlock2026()">DESBLOQUEAR 2026</button>
+      <div id="alert"></div>
+    </div>
   </div>
 
+  <!-- CONTENIDO -->
   <div id="content" style="display:none;"></div>
 
 </div>
 
 <script>
 const audio = document.getElementById("audio");
+const intro = document.getElementById("intro");
 const menu = document.getElementById("menu");
 const content = document.getElementById("content");
 const alertBox = document.getElementById("alert");
 
-const required = [
-  "comercial","mercadeo","operaciones",
-  "desarrollo","finanzas","personas","gerencia","tiendas"
-];
-
+const required = ["comercial","mercadeo","operaciones","desarrollo","finanzas","personas","gerencia","tiendas"];
 const visited = new Set();
+
+function startMission(){
+  intro.style.display = "none";
+  menu.style.display = "block";
+  audio.play();
+}
 
 function playAudio(){
   audio.currentTime = 0;
@@ -183,65 +208,22 @@ function playAudio(){
 }
 
 const messages = {
-  comercial: {
-    title:"Equipo Comercial",
-    text:`Gracias por estar al frente de los resultados todos los días.
-    Por empujar cada meta, sostener la presión y no dejar de avanzar.
-    Gracias también por el trabajo de formación, por desarrollar personas
-    y elevar el nivel del equipo para que cada logro tenga bases sólidas.`
-  },
-  mercadeo:{
-    title:"Mercadeo & Visual Merchandising",
-    text:`Gracias por darle voz, imagen y emoción a nuestras marcas.
-    Por transformar ideas en experiencias, cuidar cada detalle
-    y hacer que la marca se viva en cada punto.`
-  },
-  operaciones:{
-    title:"Operaciones, Producto, Bodega e Inventarios",
-    text:`Gracias por el orden, la precisión y el trabajo constante.
-    Por cuidar procesos, producto y movimiento,
-    y ser el respaldo silencioso que sostiene toda la operación.`
-  },
-  desarrollo:{
-    title:"Desarrollo",
-    text:`Gracias por impulsar la evolución, los sistemas
-    y las mejoras que nos permiten crecer,
-    adaptarnos y avanzar hacia el futuro.`
-  },
-  finanzas:{
-    title:"Finanzas",
-    text:`Gracias por el control, la responsabilidad
-    y la visión que mantiene el equilibrio
-    y permite que la empresa crezca con estabilidad.`
-  },
-  personas:{
-    title:"Personas & Asistencia al Personal",
-    text:`Gracias por cuidar la cultura, los procesos
-    y a cada persona que forma parte de Dinegma.
-    Por crear espacios donde se trabaja mejor cada día.`
-  },
-  gerencia:{
-    title:"Gerencia",
-    text:`Gracias por marcar el rumbo, asumir decisiones clave
-    y liderar con visión en cada etapa del año.`
-  },
-  tiendas:{
-    title:"Equipo de Tiendas",
-    text:`Ustedes son el corazón de todo esto.
-    Asesoras, asesores, administradores alternos y administradores
-    que viven la tienda cada día y hacen que las marcas
-    Vélez, Hurley, Nava y Shopialo cobren vida frente al cliente.
-    Gracias por representar la marca con orgullo y compromiso.`
-  }
+  comercial:{ title:"Equipo Comercial", text:"Gracias por empujar resultados, sostener la presión y formar al equipo para alcanzar cada meta." },
+  mercadeo:{ title:"Mercadeo & Visual Merchandising", text:"Gracias por darle voz, imagen y experiencia a nuestras marcas." },
+  operaciones:{ title:"Operaciones, Producto, Bodega e Inventarios", text:"Gracias por el orden, la precisión y el respaldo que sostiene todo." },
+  desarrollo:{ title:"Desarrollo", text:"Gracias por impulsar la evolución y las mejoras que nos permiten crecer." },
+  finanzas:{ title:"Finanzas", text:"Gracias por el control, la responsabilidad y la visión que mantiene el equilibrio." },
+  personas:{ title:"Personas & Asistencia al Personal", text:"Gracias por cuidar la cultura, los procesos y a las personas." },
+  gerencia:{ title:"Gerencia", text:"Gracias por liderar, decidir y marcar el rumbo." },
+  tiendas:{ title:"Equipo de Tiendas", text:"Gracias por dar vida a Vélez, Hurley, Nava y Shopialo cada día frente al cliente." }
 };
 
 function openArea(area,btn){
   visited.add(area);
   btn.classList.add("visited");
-
+  menu.style.display="none";
+  content.style.display="block";
   const m = messages[area];
-  menu.style.display = "none";
-  content.style.display = "block";
   content.innerHTML = `
     <h2 class="area-title ${area}">${m.title}</h2>
     <p>${m.text}</p>
@@ -250,38 +232,55 @@ function openArea(area,btn){
 }
 
 function backToMenu(){
-  content.style.display = "none";
-  menu.style.display = "block";
+  content.style.display="none";
+  menu.style.display="block";
 }
 
 function unlock2026(){
   if(visited.size < required.length){
-    alertBox.innerText = "Selecciona primero todas las áreas que fueron parte de este año 🙂";
+    alertBox.innerText="Selecciona primero todas las áreas que fueron parte de este año 🙂";
     return;
   }
-
-  menu.style.display = "none";
-  content.style.display = "block";
-  content.innerHTML = `
+  launchConfetti();
+  menu.style.display="none";
+  content.style.display="block";
+  content.innerHTML=`
     <h1 class="tiendas">BIENVENIDO 2026</h1>
     <p>
-      Cerramos 2025 con gratitud.<br>
-      Iniciamos 2026 con energía, enfoque y equipo.<br><br>
-      <strong>DINEGMA, VAMOS CON TODO.</strong>
+      Gracias por todo lo construido en 2025.<br>
+      Felicitaciones por el esfuerzo, el compromiso y el equipo que somos.<br><br>
+      En 2026 seguimos juntos, creciendo y triunfando una vez más.<br><br>
+      <strong>DINEGMA, JUNTOS TRIUNFAMOS.</strong>
     </p>
+    <button class="gold" onclick="goHome()">VOLVER AL MENÚ PRINCIPAL</button>
   `;
 }
 
-/* ===== ESTRELLAS ===== */
-const stars = document.getElementById("stars");
-const colors = ["#3b76aa","#53c2d7","gold"];
+function goHome(){
+  content.style.display="none";
+  menu.style.display="block";
+}
 
+function launchConfetti(){
+  for(let i=0;i<160;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"%";
+    c.style.background=["gold","#53c2d7","#3b76aa"][Math.floor(Math.random()*3)];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+/* estrellas */
+const stars=document.getElementById("stars");
+const colors=["#3b76aa","#53c2d7","gold"];
 for(let i=0;i<120;i++){
-  const s = document.createElement("div");
-  s.className = "star";
-  s.style.left = Math.random()*100+"%";
-  s.style.background = colors[Math.floor(Math.random()*colors.length)];
-  s.style.animationDuration = 20+Math.random()*30+"s";
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.background=colors[Math.floor(Math.random()*3)];
+  s.style.animationDuration=20+Math.random()*30+"s";
   stars.appendChild(s);
 }
 </script>
